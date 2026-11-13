@@ -1,0 +1,67 @@
+{
+  "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
+  "name": "daily-kiln",
+  "post": {
+    "dir": "dist/client",
+    "entrypoints": {
+      "default": {
+        "inline": true,
+        "entry": "splash.html"
+      },
+      "game": {
+        "entry": "game.html"
+      }
+    }
+  },
+  "server": {
+    "dir": "dist/server",
+    "entry": "index.cjs"
+  },
+  "permissions": {
+    "redis": true,
+    "journeys": true
+  },
+  "settings": {
+    "subreddit": {
+      "appTitle": {
+        "type": "string",
+        "label": "Title used when the app posts a new daily kiln",
+        "defaultValue": "Today's kiln"
+      },
+      "dailyPost": {
+        "type": "boolean",
+        "label": "Post a fresh daily kiln thread at 00:05 UTC",
+        "defaultValue": true
+      }
+    }
+  },
+  "menu": {
+    "items": [
+      {
+        "label": "Post today's kiln",
+        "description": "Create a new KILN post for today's ware",
+        "location": "subreddit",
+        "forUserType": "moderator",
+        "endpoint": "/internal/menu/post-create"
+      }
+    ]
+  },
+  "triggers": {
+    "onAppInstall": "/internal/triggers/on-app-install"
+  },
+  "scheduler": {
+    "tasks": {
+      "daily-kiln-post": {
+        "endpoint": "/internal/cron/daily-post",
+        "cron": "5 0 * * *"
+      }
+    }
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build"
+  },
+  "dev": {
+    "subreddit": "kiln_test"
+  }
+}
