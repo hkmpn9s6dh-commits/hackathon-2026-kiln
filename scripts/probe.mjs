@@ -1,0 +1,23 @@
+import { spawn } from 'node:child_process';
+import { chromium } from 'playwright-core';
+const PORT=4321;
+const srv=spawn(process.execPath,['scripts/dev-server.mjs','--port',String(PORT),'--seed'],{stdio:['ignore','pipe','pipe'],env:{...process.env,KILN_NOW:'2026-11-14T09:00:00Z'}});
+await new Promise(r=>setTimeout(r,2500));
+const b=await chromium.launch({executablePath:'C:/Users/张一/AppData/Local/ms-playwright/chromium-1248/chrome-win64/chrome.exe'});
+const p=await b.newPage({viewport:{width:1280,height:820}});
+await p.goto(`http://127.0.0.1:${PORT}/game.html`,{waitUntil:'networkidle'});
+await p.locator('.wares .ware').first().click();
+const box=await p.locator('canvas').boundingBox();
+const scale=Math.min(box.width/1000,box.height/560);const dx=(box.width-1000*scale)/2,dy=(box.height-560*scale)/2;
+await p.mouse.click(box.x+dx+509*scale, box.y+dy+304*scale);
+await p.waitForTimeout(150);
+await p.getByRole('button',{name:/Stoke the fire/}).click();
+await p.waitForTimeout(400);
+const info = await p.evaluate(()=>{
+  const g=document.querySelector('.game'), st=document.querySelector('.stage'), pn=document.querySelector('.panel');
+  const r=(e)=>e?JSON.stringify({t:Math.round(e.getBoundingClientRect().top),h:Math.round(e.getBoundingClientRect().height),display:getComputedStyle(e).display,w:Math.round(e.getBoundingClientRect().width)}):'none';
+  return {game:r(g),stage:r(st),panel:r(pn),scroll:document.body.scrollHeight,text:document.querySelector('.panel')?.innerText?.slice(0,200)};
+});
+console.log(info);
+await p.screenshot({path:'shots/debug.png'});
+await b.close(); srv.kill();

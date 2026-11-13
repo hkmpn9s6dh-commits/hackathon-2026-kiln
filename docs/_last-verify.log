@@ -1,0 +1,59 @@
+
+[1m== node[0m
+node v24.11.0, npm 11.6.1
+
+[1m== type check[0m
+
+[1m== unit tests[0m
+
+ RUN  v3.2.7 C:/Users/张一/WorkBuddy/spaces/2026_11_12_22-57-34/kiln
+
+ ✓ src/shared/kiln.test.ts (22 tests) 138ms
+ ✓ src/server/core/store.test.ts (12 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  34 passed (34)
+   Start at  03:27:50
+   Duration  545ms (transform 71ms, setup 0ms, collect 94ms, tests 142ms, environment 0ms, prepare 77ms)
+
+34 tests passed
+
+[1m== build[0m
+[33m[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 5.5s of this 5.6s build (99%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin vite:prepare-out-dir renderStart (87%, 4.9s, 1 call)
+Additional callback time came from the callbacks below and from callbacks under 1s.
+3 callbacks are listed without a time. Their calls overlapped, so the time inside one call includes work from other calls. To find their cost, profile the build with `node --cpu-prof`:
+  - plugin devvit resolveId (124 calls)
+  - plugin vite:css transform (3 calls)
+  - plugin vite:build-html transform (2 calls)
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+[39m
+✔ Build complete (5618ms)
+
+[1m== preflight (devvit.json + bundle)[0m
+  · client bundle: 1754KB across 19 files
+  · server bundle: 1491KB
+preflight ok
+
+[1m== end to end in a real browser[0m
+ok   splash renders the wordmark
+ok   splash shows how full the kiln is — 4 pieces in · 15h 00m left
+ok   three wares are offered
+ok   the kiln canvas has a real size — {"x":117,"y":61,"width":1046,"height":547.484375}
+ok   picking a shelf updates the note
+ok   three strokes are recorded
+ok   a grade comes back — Sound piece
+ok   the result shows the numbers — 1238°C / 1248°C / -10°C
+ok   the server refuses a second piece — already=true
+ok   the yard lists the pieces that are in — 5 rows
+ok   no console errors
+
+11/11 checks passed
+
+[1m== ui measurement[0m
+proof/ui/report.md updated
+
+[1m== hygiene[0m
+
+[1;32mverify: all green[0m
