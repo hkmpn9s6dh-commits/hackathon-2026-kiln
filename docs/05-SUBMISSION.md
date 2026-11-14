@@ -45,8 +45,8 @@ npx devvit upload
 | --- | --- |
 | **Project name** | `KILN` |
 | **Elevator pitch** | `One wood kiln a day. Everyone in the subreddit fires it together — and there is only one shelf each.` |
-| **Thumbnail** | `shots/01-card.png`（1500×1000 以内；这张是信息流尺寸的真实截图） |
-| **Video demo link** | 见 §3 的脚本；≤1 分钟，公开 YouTube |
+| **Thumbnail** | `submission/cover-1500x1000.png`（1500×1000，画廊封面） |
+| **Video demo link** | `submission/kiln-demo.webm`（29 秒，1280×720）——先传 YouTube（YouTube 收 WebM），再把链接贴这里 |
 | **App listing URL** | `https://developers.reddit.com/apps/kiln-day` |
 | **Demo subreddit** | `https://www.reddit.com/r/<你的测试sub>/` |
 | **Demo post** | `https://www.reddit.com/r/<你的测试sub>/comments/<postid>/` |

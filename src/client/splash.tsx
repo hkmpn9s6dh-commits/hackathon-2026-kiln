@@ -21,22 +21,23 @@ function hoursText(hours: number): string {
 function Poster(): React.ReactElement {
   return (
     <div className="poster" aria-hidden="true">
-      <svg viewBox="0 0 800 485" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+      <svg viewBox="0 0 800 485" width="100%" height="100%" preserveAspectRatio="xMidYMax meet">
         <rect width="800" height="485" fill="#f4ede2" />
 
         {/* the kiln wall, one arch, one piece in front of it */}
-        <rect x="-10" y="0" width="520" height="306" fill="#bda58b" />
+        <rect x="-10" y="0" width="820" height="306" fill="#bda58b" />
         <path d="M26 306 L26 176 Q188 96 424 156 L424 306 Z" fill="#9a5820" />
         <path d="M42 306 L42 190 Q188 118 408 172 L408 306 Z" fill="#120a06" />
         <path d="M42 262 Q188 240 408 266 L408 306 L42 306 Z" fill="#a8451c" />
         <path d="M42 284 Q188 266 408 288 L408 306 L42 306 Z" fill="#e0662a" />
         <path d="M42 296 Q188 284 408 298 L408 306 L42 306 Z" fill="#ffce94" />
 
-        {/* the yard floor, a single line across the card */}
-        <rect x="-10" y="306" width="820" height="2" fill="#8c7358" opacity="0.5" />
+        {/* the yard floor: clay below the line, so the art fills the frame */}
+        <rect x="-10" y="308" width="820" height="200" fill="#a58c6d" />
+        <rect x="-10" y="304" width="820" height="4" fill="#8c7358" opacity="0.55" />
 
         {/* one piece, standing on that line, lit by the arch */}
-        <g transform="translate(596 306) scale(1.05)">
+        <g transform="translate(640 306) scale(1.05)">
           <ellipse cx="6" cy="2" rx="40" ry="7" fill="#5a3e2a" opacity="0.26" />
           <path
             d="M-12 -58 C-14 -50 -31 -46 -31 -22 C-31 -5 -15 0 0 0 C15 0 31 -5 31 -22 C31 -46 14 -50 12 -58 Z"

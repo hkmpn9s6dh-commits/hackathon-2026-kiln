@@ -3,18 +3,34 @@
 闸 D 是「评委会不会停下来」这一关。父单的判据：**成品和 ≥5 件往届得奖作混排、随机字母命名，
 ≥2 位没参与的评委各自排名，每一位都把我们排在 ≥3 件得奖作之上。**
 
-## 现状（2026-11-14 04:20）
+## 现状（2026-11-14 14:05）
 
-**未过，卡在尺子。** 手上只有 3 件可用的得奖作画面，差 2 件；不凑够就排，等于把这条闸做废。
+**尺子凑齐（6 张＝5 件得奖作 + 我们），两位评委已派，1 号在跑。**
 
 | 槽 | 作品 | 成绩 | 图 | 状态 |
 | --- | --- | --- | --- | --- |
 | A | Hexaword | Best Daily Game App（Fun & Games with Devvit Web） | 已有（整屏对局，深青底） | ✅ |
 | B | Cattack! | Best Use of Phaser $5,000（Games with a Hook 2026） | 已有（Devpost 缩略图） | ✅ |
 | C | Myndrot | Honorable Mention（同上） | 已有（Devpost 缩略图） | ✅ |
-| D | Hearthvale | Honorable Mention（同上） | 抓到的图是缩略图地址、下载不完整 | ❌ 需重抓 |
-| E | Chook 或 Honk | 早期黑客松第一名／30 万订阅 | Reddit 帖子图需登录，本机被 bot 墙挡住 | ❌ 需登录截图 |
-| F | 我们 | KILN 信息流卡片 / 主屏 / 结果页 | `shots/01-card.png`、`02-select.png`、`05-result.png` | ✅ |
+| D | Hearthvale | Honorable Mention（Games with a Hook 2026） | 已有（Devpost 画廊图） | ✅ |
+| E | TinTen | Best Use of User Contributions（同上） | 已有（Devpost 画廊图） | ✅ |
+| F | Sketchy Solutions | **Best App with a Hook**（同上，总冠军） | 已有（Devpost 画廊图） | ✅ |
+
+> 六张统一成 480×320、随机字母，答案表在 `_ref/rank-key.json`（不在仓库里）。生成脚本 `scripts/blind-set.py`。
+
+## 第一轮结果
+
+| 评委 | 模型 | 名次（1→6） | KILN 的位置 | 是否过线 |
+| --- | --- | --- | --- | --- |
+| 2（AME-1384） | GLM 系 | **C(我们) → A → B → E → D → F** | **第 1**，9/10 | ✅ 在全部 5 件得奖作之上 |
+| 1（AME-1383） | gpt-6.1-sol（不同家族） | 跑中 | — | — |
+
+评委 2 的原话（节选）：
+
+> **C：9｜最强点**：奶油底＋窑口剖面克制而有品味，「ONE KILN A DAY」「4 pieces in · 15h 00m left」把每日机制、共用窑、倒计时全写在脸上——第一眼就懂，也知道自己明天为什么回来。**最弱点**：没展示「捏陶」这个核心动作，趣味要点进去才兑现；Reddit 感靠共同仪式的气氛而非标识。
+> **300px**：最先丢失的是那几行小字——「ONE KILN A DAY」、说明句和「4 pieces in · 15h 00m left」一糊，「每天一起开窑」的钩子就没了，只剩一张好看的静物图。
+
+据此已改：卡片改成**上图下文**（不再把说明压在画上），标题/说明/倒计时全部移出画外，320×512 下逐字可读（`shots/card-300.png`）。
 
 **为什么本机抓不到 D、E**：`www.reddit.com` 走代理能通，但 `/r/...` 与 `.json` 都返回
 “Prove your humanity” 人机验证；`i.redd.it` 上的帖子预览图必须带签名。Devpost 的项目页只给

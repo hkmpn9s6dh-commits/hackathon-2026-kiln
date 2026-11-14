@@ -118,7 +118,7 @@ h3 {
   position: relative;
   overflow: hidden;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(160px, 1fr) auto;
   height: 100%;
   max-width: 1080px;
   margin: 0 auto;
@@ -235,9 +235,12 @@ h3 {
 .panel {
   display: flex;
   flex-direction: column;
-  gap: 11px;
-  padding: 14px 4px 2px;
+  gap: 10px;
+  padding: 12px 4px 2px;
   border-top: 1px solid rgba(34, 26, 20, 0.14);
+  overflow: auto;
+  max-height: 46vh;
+  scrollbar-width: thin;
 }
 
 .panel-row {
@@ -264,6 +267,55 @@ h3 {
 
 .panel .spacer {
   flex: 1;
+}
+
+.load {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 8px 0 2px;
+}
+
+.load-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.load-name {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.load-ticks {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.load-ticks i {
+  width: 9px;
+  height: 4px;
+  border-radius: 1px;
+  background: rgba(34, 26, 20, 0.14);
+}
+
+.load-ticks i.on {
+  background: #a8481f;
+}
+
+.load-num {
+  font-size: 12px;
+  color: var(--porcelain-dim);
+  min-width: 10px;
+}
+
+.load-note {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
 }
 
 .wares {
@@ -314,11 +366,16 @@ h3 {
   line-height: 1.35;
 }
 
-.ware .swatch {
-  width: 26px;
-  height: 2px;
-  margin-bottom: 7px;
-  opacity: 0.9;
+.ware-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 3px;
+}
+
+.ware .glyph {
+  flex: none;
+  opacity: 0.95;
 }
 
 .btn {
@@ -515,10 +572,40 @@ h3 {
   margin-left: 2px;
 }
 
+.record {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 0;
+  padding: 8px 0 9px;
+  border-top: 1px solid rgba(34, 26, 20, 0.12);
+  border-bottom: 1px solid rgba(34, 26, 20, 0.12);
+}
+
+.record div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.record dt {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.record dd {
+  margin: 0;
+  font-size: 13px;
+  color: var(--porcelain);
+}
+
 .explain {
   font-size: 12.5px;
   color: var(--muted);
   line-height: 1.55;
+  margin: 0;
 }
 
 .actions {
@@ -593,78 +680,84 @@ h3 {
 /* Feed card (splash)                                                  */
 /* ------------------------------------------------------------------ */
 
-/* The feed card is a poster: one object, one fire, one line of type. */
+/* The feed card: art on top, type on paper below. Works at 300x300 and at
+   1080x660, because nothing is absolutely positioned over the art. */
 .card {
   position: relative;
   height: 100%;
-  min-height: 320px;
+  min-height: 300px;
   border-radius: 18px;
   border: 1px solid rgba(34, 26, 20, 0.12);
   background: #f4ede2;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .poster {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  flex: 0 0 58%;
+  min-height: 0;
+  overflow: hidden;
+  background: #bda58b;
 }
 
 .poster svg {
   display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .card-copy {
   position: relative;
   z-index: 1;
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  gap: 6px;
-  padding: 18px;
-  background: linear-gradient(
-    180deg,
-    rgba(244, 237, 226, 0) 54%,
-    rgba(244, 237, 226, 0.86) 76%,
-    rgba(244, 237, 226, 0.98) 88%
-  );
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 18px 16px;
+  background: #f4ede2;
+  border-top: 1px solid rgba(34, 26, 20, 0.18);
 }
 
 .card h1 {
-  font-size: clamp(46px, 15vw, 92px);
-  line-height: 0.86;
-  letter-spacing: 0.16em;
+  font-size: clamp(40px, 9vw, 78px);
+  line-height: 0.9;
+  letter-spacing: 0.14em;
   font-variation-settings: 'SOFT' 60, 'WONK' 1, 'opsz' 90;
   color: #221a14;
 }
 
 .card .kicker {
   color: #8a5a3c;
+  font-size: 11px;
 }
 
 .card .tag {
-  font-size: 13px;
+  font-size: 12.5px;
   color: #4a3b30;
-  max-width: 40ch;
+  max-width: 46ch;
   line-height: 1.45;
 }
 
 .card .status {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
 .card .cta {
-  margin-top: 8px;
+  margin-top: 6px;
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .card .streak {
-  font-size: 11.5px;
+  font-size: 11px;
   color: #8a5a3c;
   letter-spacing: 0.04em;
 }

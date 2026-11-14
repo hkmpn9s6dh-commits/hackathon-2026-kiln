@@ -276,6 +276,32 @@ function drawPiece(
   ctx.stroke();
   ctx.restore();
 
+  // a painted band and a foot ring: two details that read as made, not spawned
+  ctx.save();
+  ctx.clip(body);
+  ctx.globalAlpha = alpha * 0.5;
+  ctx.strokeStyle = 'rgba(26,34,58,0.75)';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(-34, lip.y * 0.55);
+  ctx.quadraticCurveTo(0, lip.y * 0.55 + 3, 34, lip.y * 0.55);
+  ctx.stroke();
+  ctx.globalAlpha = alpha * 0.35;
+  ctx.strokeStyle = 'rgba(255,250,240,0.9)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(-34, lip.y * 0.55 + 2.4);
+  ctx.quadraticCurveTo(0, lip.y * 0.55 + 5.4, 34, lip.y * 0.55 + 2.4);
+  ctx.stroke();
+  ctx.restore();
+
+  // foot ring
+  ctx.globalAlpha = alpha * 0.55;
+  ctx.fillStyle = 'rgba(28,18,12,0.55)';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, form === 'bowl' ? 12 : 9, 2.6, 0, 0, Math.PI * 2);
+  ctx.fill();
+
   // hairline contour
   ctx.globalAlpha = alpha * (mine ? 0.9 : 0.5);
   ctx.strokeStyle = mine ? 'rgba(255,246,232,0.95)' : `rgba(${INK},0.62)`;
@@ -366,6 +392,12 @@ export function drawKiln(
     ctx.restore();
   }
 
+  const vignette = ctx.createRadialGradient(500, 300, 180, 500, 300, 620);
+  vignette.addColorStop(0, 'rgba(30,18,10,0)');
+  vignette.addColorStop(1, 'rgba(30,18,10,0.18)');
+  ctx.fillStyle = vignette;
+  ctx.fillRect(0, 0, VIEW_W, VIEW_H);
+
   ctx.restore();
 }
 
@@ -417,6 +449,48 @@ function drawFloor(ctx: CanvasRenderingContext2D, heat: number): void {
   ctx.fill();
 }
 
+function drawFurniture(ctx: CanvasRenderingContext2D, seed: number): void {
+  const mouth = CHAMBER.mouth;
+  const tail = CHAMBER.tail;
+
+  // a pair of long tongs leaning against the wall inside the mouth chamber
+  ctx.save();
+  ctx.strokeStyle = 'rgba(28,18,12,0.85)';
+  ctx.lineWidth = 2.4;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(mouth.x + 14, GROUND - 6);
+  ctx.lineTo(mouth.x + 40, GROUND - 96);
+  ctx.moveTo(mouth.x + 22, GROUND - 6);
+  ctx.lineTo(mouth.x + 44, GROUND - 92);
+  ctx.stroke();
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.ellipse(mouth.x + 42, GROUND - 96, 7, 3.4, 0.5, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  // stacked saggers in the tail, waiting for the next firing
+  const rand = mulberry(seed ^ 0x77a1);
+  ctx.save();
+  for (let i = 0; i < 4; i += 1) {
+    const w = 30 - i * 1.5;
+    const cx = tail.x + tail.w - 34;
+    const cy = GROUND - 8 - i * 13;
+    ctx.fillStyle = `rgba(78,46,28,${(0.75 - i * 0.06).toFixed(3)})`;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, w, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,206,160,0.22)';
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy - 1, w, 6, 0, Math.PI, Math.PI * 2);
+    ctx.stroke();
+    void rand();
+  }
+  ctx.restore();
+}
+
 function drawShell(ctx: CanvasRenderingContext2D, kiln: Kiln): void {
   const { x, y, w, h } = KILN;
 
@@ -434,30 +508,36 @@ function drawShell(ctx: CanvasRenderingContext2D, kiln: Kiln): void {
   ctx.fillStyle = fill;
   ctx.fill(shell);
 
-  // brick coursing: hairlines only, never a texture
+  // brick by brick: each one gets its own fired colour, so the wall reads as clay
   ctx.save();
   ctx.clip(shell);
   const rand = mulberry(kiln.seed ^ 0x2b1d);
-  hairline(ctx, 0.12, 0.8);
-  for (let row = 0; row * 22 < h + 40; row += 1) {
-    const yy = y + row * 22;
-    ctx.beginPath();
-    ctx.moveTo(x, yy);
-    ctx.lineTo(x + w, yy);
-    ctx.stroke();
-    const offset = row % 2 === 0 ? 0 : 33;
-    for (let bx = x - offset; bx < x + w; bx += 66) {
-      ctx.beginPath();
-      ctx.moveTo(bx, yy);
-      ctx.lineTo(bx, yy + 22);
-      ctx.stroke();
+  const BW = 66;
+  const BH = 22;
+  for (let row = 0; row * BH < h + 60; row += 1) {
+    const yy = y + row * BH;
+    const offset = row % 2 === 0 ? 0 : BW / 2;
+    for (let bx = x - offset; bx < x + w; bx += BW) {
+      const r = rand();
+      const warm = 0.5 + (r - 0.5) * 0.5;
+      const light = 0.5 + (rand() - 0.5) * 0.35;
+      ctx.fillStyle = `rgba(${Math.round(150 + warm * 40)}, ${Math.round(118 + warm * 22)}, ${Math.round(90 + light * 18)}, 0.5)`;
+      ctx.fillRect(bx + 0.8, yy + 0.8, BW - 1.6, BH - 1.6);
     }
   }
-  for (let i = 0; i < 26; i += 1) {
-    const bx = x + rand() * w;
-    const by = y + 20 + rand() * (h - 30);
-    ctx.fillStyle = `rgba(${INK},${(0.03 + rand() * 0.04).toFixed(3)})`;
-    ctx.fillRect(bx, by, 26, 16);
+  // mortar: a light line on top of the joint, a dark one below
+  for (let row = 0; row * BH < h + 60; row += 1) {
+    const yy = y + row * BH;
+    ctx.fillStyle = 'rgba(255,244,226,0.10)';
+    ctx.fillRect(x, yy, w, 1);
+    ctx.fillStyle = 'rgba(40,26,16,0.16)';
+    ctx.fillRect(x, yy + BH - 1, w, 1);
+  }
+  // firebricks: a darker course right above and below each opening
+  for (const zone of ZONES) {
+    const c = CHAMBER[zone];
+    ctx.fillStyle = 'rgba(96,52,32,0.22)';
+    ctx.fillRect(c.x - 16, ARCH_TOP - 30, c.w + 32, 8);
   }
   ctx.restore();
 
@@ -472,8 +552,8 @@ function drawShell(ctx: CanvasRenderingContext2D, kiln: Kiln): void {
       GROUND - 60,
       c.w * 0.85
     );
-    halo.addColorStop(0, 'rgba(38,22,14,0.30)');
-    halo.addColorStop(0.55, 'rgba(38,22,14,0.10)');
+    halo.addColorStop(0, 'rgba(30,17,10,0.5)');
+    halo.addColorStop(0.5, 'rgba(30,17,10,0.18)');
     halo.addColorStop(1, 'rgba(38,22,14,0)');
     ctx.save();
     ctx.clip(shell);
@@ -560,6 +640,35 @@ function drawChambers(ctx: CanvasRenderingContext2D, state: RenderState, heat: n
     ctx.fillStyle = bed;
     ctx.fillRect(c.x, GROUND - bedH, c.w, bedH);
 
+    // coals: a dozen lumps, each with its own heat, flickering out of phase
+    const coalRand = mulberry((state.kiln.seed ^ 0x51a3) + zone.length * 97);
+    for (let i = 0; i < 16; i += 1) {
+      const cx = c.x + 8 + coalRand() * (c.w - 16);
+      const cy = GROUND - 4 - coalRand() * 16;
+      const r = 4 + coalRand() * 9;
+      const phase = coalRand() * Math.PI * 2;
+      const flick = state.reducedMotion ? 0.7 : 0.55 + Math.sin(time * 0.004 + phase) * 0.3 + heat * 0.15;
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 2.6);
+      g.addColorStop(0, `rgba(255,232,186,${(0.55 * flick).toFixed(3)})`);
+      g.addColorStop(0.35, `rgba(232,110,44,${(0.5 * flick).toFixed(3)})`);
+      g.addColorStop(1, 'rgba(150,40,12,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, r * 2.6, r * 1.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = `rgba(60,24,10,${(0.5).toFixed(3)})`;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 1, r, r * 0.45, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // ash drift along the floor
+    const ash = ctx.createLinearGradient(0, GROUND - 10, 0, GROUND);
+    ash.addColorStop(0, 'rgba(190,170,150,0)');
+    ash.addColorStop(1, 'rgba(190,170,150,0.12)');
+    ctx.fillStyle = ash;
+    ctx.fillRect(c.x, GROUND - 10, c.w, 10);
+
     // the ash pit line, and a stack of saggers waiting in the corner
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
     ctx.fillRect(c.x, GROUND - 26, c.w, 2);
@@ -586,6 +695,8 @@ function drawChambers(ctx: CanvasRenderingContext2D, state: RenderState, heat: n
     }
     ctx.restore();
   }
+
+  drawFurniture(ctx, state.kiln.seed);
 
   // pilasters between the chambers
   for (const wallX of [354, 640]) {
@@ -645,8 +756,29 @@ function drawPieces(ctx: CanvasRenderingContext2D, state: RenderState, time: num
     const rect = slotRect(slot);
     const baseY = rect.y + rect.h + 2;
     if (list.length === 0) {
+      // an empty shelf is not empty: bisque waits there, unglazed and dim
+      // empty shelves hold kiln furniture, never ware: a sagger reads as a
+      // container, so it cannot be mistaken for somebody's piece
+      const rand = mulberry(state.kiln.seed ^ (slot.id.length * 977) ^ slot.row * 31);
+      const stacks = 1 + Math.floor(rand() * 2);
+      for (let i = 0; i < stacks; i += 1) {
+        const x = rect.x + rect.w * (0.3 + rand() * 0.4);
+        const rings = 1 + Math.floor(rand() * 3);
+        for (let r = 0; r < rings; r += 1) {
+          const cy = baseY - 3 - r * 9;
+          ctx.strokeStyle = 'rgba(255,214,170,0.16)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.ellipse(x, cy, 17, 5, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(52,34,22,0.35)';
+          ctx.beginPath();
+          ctx.ellipse(x, cy + 1, 16, 4, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
       ctx.save();
-      ctx.globalAlpha = 0.12;
+      ctx.globalAlpha = 0.1;
       ctx.strokeStyle = 'rgba(255,226,186,0.8)';
       ctx.setLineDash([3, 6]);
       ctx.lineWidth = 0.9;

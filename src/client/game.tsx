@@ -81,12 +81,57 @@ function viewFromMine(state: StateResponse): ResultView | null {
   };
 }
 
+const GLYPH: Record<Ware['form'], string> = {
+  // wide and shallow, with a foot
+  bowl: 'M1.5 8.5 Q14 1.5 26.5 8.5 Q23 16.5 14 16.5 Q5 16.5 1.5 8.5 Z M9 16.5 L9 18 L19 18 L19 16.5 Z',
+  // belly, shoulder, short neck
+  jar: 'M11 2.5 Q9.5 5 8 6.5 Q3.5 9.5 5 14.5 Q8 18 14 18 Q20 18 23 14.5 Q24.5 9.5 20 6.5 Q18.5 5 17 2.5 Z',
+  // tall, shoulder high, long neck
+  vase: 'M12 1.5 Q11.5 5 10 7 Q7 9.5 7.5 14 Q8.5 18 14 18 Q19.5 18 20.5 14 Q21 9.5 18 7 Q16.5 5 16 1.5 Z',
+  // ovoid, narrow at the neck
+  egg: 'M11 2 Q9 6 7.5 9 Q5 13 6.5 16 Q9.5 18.5 14 18.5 Q18.5 18.5 21.5 16 Q23 13 20.5 9 Q19 6 17 2 Z',
+};
+
+function PieceGlyph(props: { form: Ware['form']; glaze: string; size?: number }): React.ReactElement {
+  const size = props.size ?? 30;
+  return (
+    <svg width={size} height={size * 0.85} viewBox="0 0 28 20" aria-hidden="true" className="glyph">
+      <path d={GLYPH[props.form]} fill={props.glaze} stroke="rgba(34,26,20,0.65)" strokeWidth="0.9" />
+      <ellipse cx="14" cy="2" rx="4" ry="1" fill="rgba(20,12,8,0.6)" />
+    </svg>
+  );
+}
+
+function LoadMeter(props: { counts: Record<string, number> }): React.ReactElement {
+  return (
+    <div className="load" role="group" aria-label="Pieces in each chamber">
+      {ZONES.map((zone) => {
+        const n = props.counts[zone] ?? 0;
+        return (
+          <div className="load-cell" key={zone}>
+            <span className="load-name">{ZONE_LABEL[zone]}</span>
+            <span className="load-ticks" aria-hidden="true">
+              {[0, 1, 2, 3].map((i) => (
+                <i key={i} className={i < n ? 'on' : ''} />
+              ))}
+            </span>
+            <span className="load-num mono">{n}</span>
+          </div>
+        );
+      })}
+      <span className="load-note">every piece here costs 7°C</span>
+    </div>
+  );
+}
+
 function WareCard(props: { ware: Ware; active: boolean; onPick: () => void }): React.ReactElement {
   return (
     <button className="ware" aria-pressed={props.active} onClick={props.onPick}>
-      <span className="swatch" style={{ background: props.ware.glaze }} />
-      <span className="name">{props.ware.name}</span>
-      <span className="temp mono">{props.ware.ideal}°C</span>
+      <span className="ware-head">
+        <PieceGlyph form={props.ware.form} glaze={props.ware.glaze} />
+        <span className="name">{props.ware.name}</span>
+      </span>
+      <span className="temp mono">{props.ware.ideal}°C target</span>
       <span className="hint">{props.ware.line}</span>
     </button>
   );
@@ -442,6 +487,7 @@ function App(): React.ReactElement {
                 Stoke the fire →
               </button>
             </div>
+            <LoadMeter counts={counts} />
             <div className="wares">
               {kiln.wares.map((w) => (
                 <WareCard
@@ -544,6 +590,20 @@ function App(): React.ReactElement {
                 </div>
               </div>
             </div>
+            <dl className="record">
+              <div>
+                <dt>Kiln row</dt>
+                <dd>{result.zone.replace('mouth', 'Fire mouth').replace('body', 'Body').replace('tail', 'Tail')} · {result.slotId.split('-')[1] ? Number(result.slotId.split('-')[1]) + 1 : 1}</dd>
+              </div>
+              <div>
+                <dt>Stoking</dt>
+                <dd className="mono">{result.stoke >= 0 ? '+' : ''}{result.stoke}°C</dd>
+              </div>
+              <div>
+                <dt>Crowd</dt>
+                <dd className="mono">{Math.max(0, (counts as unknown as Record<string, number>)[result.zone] ?? 1) - 1} in chamber</dd>
+              </div>
+            </dl>
             <p className="explain">
               {explain(
                 {
