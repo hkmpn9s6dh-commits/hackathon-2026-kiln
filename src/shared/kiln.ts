@@ -14,11 +14,22 @@ export type Grade = 'transmuted' | 'fine' | 'sound' | 'under' | 'over';
 
 export type Variant = 'clear' | 'rain' | 'wind';
 
+export type WareForm =
+  | 'bowl'
+  | 'plate'
+  | 'cup'
+  | 'basin'
+  | 'jar'
+  | 'gourd'
+  | 'vase'
+  | 'meiping'
+  | 'egg';
+
 export type Ware = {
   id: string;
   name: string;
   ideal: number;
-  form: 'bowl' | 'jar' | 'vase' | 'egg';
+  form: WareForm;
   glaze: string;
   line: string;
 };
@@ -88,33 +99,73 @@ export const SOUND_BAND = 20;
 
 export const WARE_LIB: readonly Ware[] = [
   {
+    id: 'plate',
+    name: 'Foliate dish',
+    ideal: 1194,
+    form: 'plate',
+    glaze: '#D8C9AE',
+    line: 'The coolest shelf in the kiln. Nothing to prove, and it knows it.',
+  },
+  {
     id: 'bowl',
     name: 'Celadon bowl',
-    ideal: 1198,
+    ideal: 1208,
     form: 'bowl',
     glaze: '#8FB3A4',
     line: 'Wants the cool end. Forgiving, but boring when it is perfect.',
   },
   {
+    id: 'cup',
+    name: 'Persimmon tea bowl',
+    ideal: 1220,
+    form: 'cup',
+    glaze: '#BE6A46',
+    line: 'Iron glaze. It turns from rust to blood between two strokes.',
+  },
+  {
+    id: 'basin',
+    name: 'Lotus basin',
+    ideal: 1230,
+    form: 'basin',
+    glaze: '#9DB4C6',
+    line: 'A wide mouth cools faster than it fills. Watch the near edge.',
+  },
+  {
     id: 'jar',
     name: 'Blue-and-white jar',
-    ideal: 1248,
+    ideal: 1246,
     form: 'jar',
     glaze: '#7E9BD1',
     line: 'The middle of the kiln. Cobalt runs if you push it.',
   },
   {
+    id: 'gourd',
+    name: 'Double gourd',
+    ideal: 1262,
+    form: 'gourd',
+    glaze: '#A8BE72',
+    line: 'Two bellies, two chances to slump. The waist goes first.',
+  },
+  {
     id: 'vase',
     name: 'Shadow-blue vase',
-    ideal: 1300,
+    ideal: 1282,
     form: 'vase',
     glaze: '#A9C6E8',
     line: 'Wants real heat. Miss low and it stays chalky.',
   },
   {
+    id: 'meiping',
+    name: 'Plum-blossom vase',
+    ideal: 1300,
+    form: 'meiping',
+    glaze: '#5F8298',
+    line: 'A narrow mouth and a heavy shoulder. It drinks the heat.',
+  },
+  {
     id: 'egg',
     name: 'Dragon-egg bottle',
-    ideal: 1326,
+    ideal: 1320,
     form: 'egg',
     glaze: '#C9A227',
     line: 'Only the fire mouth will do. Overfire and it slumps.',
@@ -226,7 +277,10 @@ export function makeKiln(day: string): Kiln {
 
   // The dragon-egg bottle only comes out on dry nights: on a wet night even the
   // fire mouth cannot hold it, and a ware nobody can fire is a lie on the shelf.
-  const pool = WARE_LIB.filter((ware) => !(variant === 'rain' && ware.id === 'egg'));
+  const pool = WARE_LIB.filter((ware) => {
+    if (variant !== 'rain') return true;
+    return ware.ideal <= 1300;
+  });
   for (let i = pool.length - 1; i > 0; i -= 1) {
     const j = Math.floor(rng() * (i + 1));
     const a = pool[i];

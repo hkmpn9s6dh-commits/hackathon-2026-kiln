@@ -1,0 +1,11 @@
+import { spawn } from 'node:child_process';
+import { chromium } from 'playwright-core';
+const PORT=4341;
+const srv=spawn(process.execPath,['scripts/dev-server.mjs','--port',String(PORT),'--seed'],{stdio:['ignore','pipe','pipe'],env:{...process.env,KILN_NOW:'2026-11-14T09:00:00Z'}});
+await new Promise(r=>setTimeout(r,2600));
+const b=await chromium.launch({executablePath:'C:/Users/张一/AppData/Local/ms-playwright/chromium-1248/chrome-win64/chrome.exe'});
+const p=await b.newPage({viewport:{width:1280,height:860},deviceScaleFactor:2});
+await p.goto(`http://127.0.0.1:${PORT}/game.html`,{waitUntil:'networkidle'});
+await p.waitForTimeout(1200);
+await p.screenshot({path:'shots/full.png'});
+await b.close(); srv.kill();

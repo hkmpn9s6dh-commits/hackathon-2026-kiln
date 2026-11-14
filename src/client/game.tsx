@@ -8,6 +8,7 @@ import { createRoot } from 'react-dom/client';
 import type { CommitResponse, StateResponse, YardResponse } from '../shared/api';
 import {
   COLLECTIVE_BONUS,
+  FINE_BAND,
   GRADE_LABEL,
   GRADE_LINE,
   STOKE_MAX,
@@ -19,7 +20,7 @@ import {
   hash32,
   shortDelta,
 } from '../shared/kiln';
-import type { Grade, Kiln, Ware } from '../shared/kiln';
+import type { Grade, Kiln, Ware, WareForm } from '../shared/kiln';
 import { KilnStage } from './KilnStage';
 import { tintGlaze } from './kiln-canvas';
 import { isMuted, setMuted, sfx } from './audio';
@@ -81,17 +82,26 @@ function viewFromMine(state: StateResponse): ResultView | null {
   };
 }
 
-const GLYPH: Record<Ware['form'], string> = {
+const GLYPH: Record<WareForm, string> = {
   // wide and shallow, with a foot
   bowl: 'M1.5 8.5 Q14 1.5 26.5 8.5 Q23 16.5 14 16.5 Q5 16.5 1.5 8.5 Z M9 16.5 L9 18 L19 18 L19 16.5 Z',
+  // almost flat, the rim turned up
+  plate: 'M1 11 Q14 7.5 27 11 Q25 15.5 14 16 Q3 15.5 1 11 Z M9 15.5 L9 17.6 L19 17.6 L19 15.5 Z',
+  // a cone: tea bowl
+  cup: 'M7.5 7.5 Q14 6.2 20.5 7.5 L16.5 16.4 Q14 18.4 11.5 16.4 Z M11.5 16.4 L11 18 L17 18 L16.5 16.4 Z',
+  // lotus basin: a lip that flares out, then a shallow belly
+  basin: 'M1 9.4 Q6.5 6.8 14 6.8 Q21.5 6.8 27 9.4 Q24.5 15.6 14 16.2 Q3.5 15.6 1 9.4 Z',
   // belly, shoulder, short neck
   jar: 'M11 2.5 Q9.5 5 8 6.5 Q3.5 9.5 5 14.5 Q8 18 14 18 Q20 18 23 14.5 Q24.5 9.5 20 6.5 Q18.5 5 17 2.5 Z',
+  // two bellies and a waist
+  gourd: 'M12 2 Q10.5 4.2 10.6 6.4 Q7.4 8 8.4 10.8 Q9.2 12 11 12.4 Q8 13.6 7.2 15.6 Q7 18 14 18 Q21 18 20.8 15.6 Q20 13.6 17 12.4 Q18.8 12 19.6 10.8 Q20.6 8 17.4 6.4 Q17.5 4.2 16 2 Z',
   // tall, shoulder high, long neck
   vase: 'M12 1.5 Q11.5 5 10 7 Q7 9.5 7.5 14 Q8.5 18 14 18 Q19.5 18 20.5 14 Q21 9.5 18 7 Q16.5 5 16 1.5 Z',
+  // plum vase: narrow mouth, heavy shoulder, long taper
+  meiping: 'M12.4 1.8 Q12.2 4.4 10.6 5.8 Q7.4 7.4 7.6 10.4 Q8 14 9.6 16.2 Q11.4 18 14 18 Q16.6 18 18.4 16.2 Q20 14 20.4 10.4 Q20.6 7.4 17.4 5.8 Q15.8 4.4 15.6 1.8 Z',
   // ovoid, narrow at the neck
   egg: 'M11 2 Q9 6 7.5 9 Q5 13 6.5 16 Q9.5 18.5 14 18.5 Q18.5 18.5 21.5 16 Q23 13 20.5 9 Q19 6 17 2 Z',
 };
-
 function PieceGlyph(props: { form: Ware['form']; glaze: string; size?: number }): React.ReactElement {
   const size = props.size ?? 30;
   return (
@@ -124,15 +134,32 @@ function LoadMeter(props: { counts: Record<string, number> }): React.ReactElemen
   );
 }
 
+const HEAT_MIN = 1176;
+const HEAT_MAX = 1332;
+
 function WareCard(props: { ware: Ware; active: boolean; onPick: () => void }): React.ReactElement {
+  const pos = ((props.ware.ideal - HEAT_MIN) / (HEAT_MAX - HEAT_MIN)) * 100;
+  const bandStart = Math.max(0, pos - (FINE_BAND / (HEAT_MAX - HEAT_MIN)) * 100);
+  const bandWidth = (FINE_BAND * 2 * 100) / (HEAT_MAX - HEAT_MIN);
   return (
     <button className="ware" aria-pressed={props.active} onClick={props.onPick}>
-      <span className="ware-head">
-        <PieceGlyph form={props.ware.form} glaze={props.ware.glaze} />
-        <span className="name">{props.ware.name}</span>
+      <span className="ware-stripe" style={{ background: props.ware.glaze }} />
+      <span className="ware-body">
+        <span className="ware-head">
+          <PieceGlyph form={props.ware.form} glaze={props.ware.glaze} />
+          <span className="name">{props.ware.name}</span>
+        </span>
+        <span className="ware-meter" aria-hidden="true">
+          <span className="meter-track" />
+          <span className="meter-band" style={{ left: `${bandStart}%`, width: `${bandWidth}%` }} />
+          <span className="meter-mark" style={{ left: `${pos}%` }} />
+        </span>
+        <span className="ware-read">
+          <span className="temp mono">{props.ware.ideal}°C</span>
+          <span className="temp-note">wants</span>
+        </span>
+        <span className="hint">{props.ware.line}</span>
       </span>
-      <span className="temp mono">{props.ware.ideal}°C target</span>
-      <span className="hint">{props.ware.line}</span>
     </button>
   );
 }
@@ -423,6 +450,14 @@ function App(): React.ReactElement {
           {state?.day} · {kiln.variantLine}
         </span>
         <span className="spacer" />
+        <span className="topstat">
+          <b className="mono">{yard?.total ?? 0}</b>
+          <span>in the kiln</span>
+        </span>
+        <span className="topstat">
+          <b className="mono">{kiln.wares.length}</b>
+          <span>on the shelf</span>
+        </span>
         <span className="clock">
           <span>closes in</span>
           <b className="mono">{hoursText(state?.hoursLeft ?? 0)}</b>
