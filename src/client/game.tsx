@@ -566,8 +566,17 @@ function App(): React.ReactElement {
             <div className="result">
               <div className={`stamp grade-${result.grade}`}>
                 <span className="kicker">{result.already ? 'Already fired today' : 'Out of the kiln'}</span>
-                <span className="grade">{GRADE_LABEL[result.grade]}</span>
-                <span className="line">{GRADE_LINE[result.grade]}</span>
+                <div className="stamp-body">
+                  <PieceGlyph
+                    form={(kiln.wares.find((w) => w.name === result.wareName) ?? kiln.wares[0]!).form}
+                    glaze={(kiln.wares.find((w) => w.name === result.wareName) ?? kiln.wares[0]!).glaze}
+                    size={72}
+                  />
+                  <div className="stamp-text">
+                    <span className="grade">{GRADE_LABEL[result.grade]}</span>
+                    <span className="line">{GRADE_LINE[result.grade]}</span>
+                  </div>
+                </div>
               </div>
               <div className="figures">
                 <div className="figure">
@@ -672,6 +681,11 @@ function App(): React.ReactElement {
             <div className="yard-list">
               {(yard?.entries ?? []).map((entry, index) => (
                 <div className="piece-row" key={`${entry.username}-${entry.at}-${index}`}>
+                  <PieceGlyph
+                    form={(kiln.wares.find((w) => w.name === entry.wareName) ?? kiln.wares[0]!).form}
+                    glaze={(kiln.wares.find((w) => w.name === entry.wareName) ?? kiln.wares[0]!).glaze}
+                    size={18}
+                  />
                   <span
                     className="dot"
                     style={{

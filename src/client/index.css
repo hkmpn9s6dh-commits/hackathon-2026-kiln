@@ -507,6 +507,18 @@ h3 {
   background: radial-gradient(120% 140% at 0% 0%, rgba(226, 87, 31, 0.10), transparent 60%);
 }
 
+.stamp-body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stamp-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .stamp .grade {
   font-family: var(--display);
   font-size: 27px;
@@ -810,7 +822,19 @@ h3 {
   .figure .v {
     font-size: 16px;
   }
-  .stamp .grade {
+  .stamp-body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stamp-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stamp .grade {
     font-size: 22px;
   }
   .topbar {

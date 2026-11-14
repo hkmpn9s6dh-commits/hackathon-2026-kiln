@@ -21,7 +21,7 @@ SOURCES = [
     ("tinten", REF / "tinten.png", "TinTen — Best Use of User Contributions, Games with a Hook 2026"),
     ("sketchy", REF / "sketchy-solutions.png", "Sketchy Solutions — Best App with a Hook, Games with a Hook 2026"),
     ("hearthvale", REF / "hearthvale.png", "Hearthvale — Honorable Mention, Games with a Hook 2026"),
-    ("kiln", ROOT / "shots" / "01-card.png", "KILN — our entry (feed card)"),
+    ("kiln", ROOT / "submission" / "cover-1500x1000.png", "KILN — our entry (gallery cover, 1500x1000)"),
 ]
 
 
@@ -29,17 +29,18 @@ def normalise(path: Path) -> Image.Image:
     img = Image.open(path).convert("RGB")
     target = W / H
     ratio = img.width / img.height
+    # Fit, never crop: cropping a card cuts its own type, and that would make the
+    # ranking measure our margin instead of our design.
     if ratio > target:
-        # too wide: crop the sides
         new_w = int(img.height * target)
-        left = (img.width - new_w) // 2
-        img = img.crop((left, 0, left + new_w, img.height))
+        canvas = Image.new("RGB", (new_w, img.height), (244, 237, 226))
+        canvas.paste(img.resize((new_w, int(img.height * new_w / img.width)), Image.LANCZOS), (0, 0))
+        img = canvas
     elif ratio < target:
-        # too tall: crop top and bottom, keep the top third (most cards put the
-        # subject high)
         new_h = int(img.width / target)
-        top = max(0, int((img.height - new_h) * 0.35))
-        img = img.crop((0, top, img.width, top + new_h))
+        canvas = Image.new("RGB", (img.width, new_h), (244, 237, 226))
+        canvas.paste(img, (0, max(0, (new_h - img.height) // 2)))
+        img = canvas
     return img.resize((W, H), Image.LANCZOS)
 
 

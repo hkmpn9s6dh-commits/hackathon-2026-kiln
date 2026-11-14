@@ -24,28 +24,39 @@ function Poster(): React.ReactElement {
       <svg viewBox="0 0 640 500" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
         <rect width="640" height="500" fill="#bda58b" />
 
-        {/* the arch fills most of the frame: we are standing right at the mouth */}
-        <path d="M-40 430 L-40 120 Q170 40 470 110 L470 430 Z" fill="#9a5820" />
-        <path d="M-16 430 L-16 148 Q170 76 440 138 L440 430 Z" fill="#120a06" />
-        <path d="M-16 336 Q170 300 440 350 L440 430 L-16 430 Z" fill="#a8451c" />
-        <path d="M-16 376 Q170 344 440 388 L440 430 L-16 430 Z" fill="#e0662a" />
-        <path d="M-16 402 Q170 376 440 412 L440 430 L-16 430 Z" fill="#ffce94" />
+        {/* one whole arch, centred, with the piece standing inside its mouth */}
+        <path d="M56 402 L56 208 Q320 92 584 208 L584 402 Z" fill="#9a5820" />
+        <path d="M84 402 L84 232 Q320 128 556 232 L556 402 Z" fill="#1d1109" />
+        <path d="M84 402 L84 232 Q320 128 556 232 L556 402 Z" fill="none" stroke="#0d0805" strokeWidth="2" />
 
-        {/* the yard floor, and the piece standing on it */}
-        <rect x="-10" y="430" width="660" height="80" fill="#a58c6d" />
-        <rect x="-10" y="426" width="660" height="4" fill="#8c7358" opacity="0.6" />
+        {/* fire floor inside the mouth */}
+        <path d="M84 402 L84 372 Q320 340 556 372 L556 402 Z" fill="#7a2f12" />
+        <path d="M84 402 L84 384 Q320 356 556 384 L556 402 Z" fill="#c9561f" />
+        <path d="M84 402 L84 394 Q320 372 556 394 L556 402 Z" fill="#ffc37a" />
 
-        <g transform="translate(492 430) scale(1.5)">
-          <ellipse cx="6" cy="2" rx="40" ry="7" fill="#3a2418" opacity="0.35" />
+        {/* the piece, centre stage, lit from the fire under it */}
+        <g transform="translate(320 398) scale(1.5)">
+          <ellipse cx="0" cy="2" rx="42" ry="8" fill="#1a0d06" opacity="0.55" />
           <path
             d="M-12 -58 C-14 -50 -31 -46 -31 -22 C-31 -5 -15 0 0 0 C15 0 31 -5 31 -22 C31 -46 14 -50 12 -58 Z"
             fill="#2f5aa8"
-            stroke="#1a120c"
-            strokeWidth="1.6"
+            stroke="#0f0a07"
+            strokeWidth="1.4"
           />
-          <path d="M-24 -34 C-16 -42 -4 -46 6 -46" stroke="#ffffff" strokeOpacity="0.45" strokeWidth="5" fill="none" />
-          <ellipse cx="0" cy="-58" rx="12" ry="3.6" fill="#0b0603" />
-          <ellipse cx="0" cy="-58" rx="12" ry="3.6" fill="none" stroke="#1a120c" strokeWidth="1.6" />
+          <path d="M-24 -34 C-16 -42 -4 -46 6 -46" stroke="#ffffff" strokeOpacity="0.5" strokeWidth="5" fill="none" />
+          <ellipse cx="0" cy="-58" rx="12" ry="3.6" fill="#070402" />
+          <ellipse cx="0" cy="-58" rx="12" ry="3.6" fill="none" stroke="#0f0a07" strokeWidth="1.4" />
+        </g>
+
+        {/* the yard floor */}
+        <rect x="-10" y="402" width="660" height="110" fill="#a58c6d" />
+        <rect x="-10" y="398" width="660" height="4" fill="#8c7358" opacity="0.6" />
+
+        {/* the only verb: a stoke band with the needle in it */}
+        <g transform="translate(212 432)">
+          <rect x="0" y="0" width="216" height="12" rx="6" fill="#5f4b38" opacity="0.5" />
+          <rect x="62" y="0" width="56" height="12" rx="6" fill="#a8451c" />
+          <rect x="128" y="-6" width="4" height="24" fill="#221a14" />
         </g>
       </svg>
     </div>
