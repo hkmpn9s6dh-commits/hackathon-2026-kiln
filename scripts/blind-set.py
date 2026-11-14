@@ -8,7 +8,7 @@ import json
 import random
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
 REF = ROOT / "_ref" / "ruler"
@@ -52,7 +52,17 @@ def main() -> None:
 
     key = {}
     for (slug, path, note), letter in zip(images, letters):
-        img = normalise(path)
+        img = normalise(path).convert("RGB")
+        # burn the letter into the image: judges reliably describe pictures but
+        # do not reliably map "the third attachment" to the letter C.
+        draw = ImageDraw.Draw(img)
+        try:
+            font = ImageFont.truetype("arialbd.ttf", 30)
+        except OSError:
+            font = ImageFont.load_default()
+        box = [8, 8, 44, 42]
+        draw.rectangle(box, fill=(20, 14, 10))
+        draw.text((16, 12), letter, fill=(250, 244, 234), font=font)
         img.save(OUT / f"{letter}.png")
         key[letter] = {"slug": slug, "note": note, "source": str(path.relative_to(ROOT))}
 
