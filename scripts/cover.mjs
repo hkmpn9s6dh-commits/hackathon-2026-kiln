@@ -48,16 +48,16 @@ const html = `<!doctype html>
       ${Array.from({ length: 28 }, (_, i) => `<line x1="0" y1="${i * 22}" x2="1500" y2="${i * 22}" />`).join('')}
     </g>
     <!-- one deep arch -->
-    <path d="M70 640 L70 300 Q420 110 900 280 L900 640 Z" fill="#9a5820" />
-    <path d="M100 640 L100 330 Q420 160 870 310 L870 640 Z" fill="#120a06" />
-    <path d="M100 520 Q420 470 870 530 L870 640 L100 640 Z" fill="#a8451c" />
-    <path d="M100 574 Q420 528 870 584 L870 640 L100 640 Z" fill="#e0662a" />
-    <path d="M100 610 Q420 576 870 618 L870 640 L100 640 Z" fill="#ffce94" />
+    <path d="M40 640 L40 280 Q380 80 830 270 L830 640 Z" fill="#9a5820" />
+    <path d="M70 640 L70 312 Q380 130 800 290 L800 640 Z" fill="#120a06" />
+    <path d="M70 512 Q380 460 800 522 L800 640 L70 640 Z" fill="#a8451c" />
+    <path d="M70 566 Q380 520 800 576 L800 640 L70 640 Z" fill="#e0662a" />
+    <path d="M70 602 Q380 568 800 610 L800 640 L70 640 Z" fill="#ffce94" />
     <!-- floor -->
     <rect x="0" y="640" width="1500" height="60" fill="#a58c6d" />
     <rect x="0" y="638" width="1500" height="4" fill="#7d664c" opacity="0.55" />
     <!-- the piece -->
-    <g transform="translate(1160 640) scale(2.35)">
+    <g transform="translate(1090 640) scale(3.6)">
       <ellipse cx="6" cy="2" rx="42" ry="8" fill="#5a3e2a" opacity="0.28" />
       <path d="M-12 -58 C-14 -50 -31 -46 -31 -22 C-31 -5 -15 0 0 0 C15 0 31 -5 31 -22 C31 -46 14 -50 12 -58 Z"
             fill="#2f5aa8" stroke="#221a14" stroke-width="2" />
