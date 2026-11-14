@@ -21,41 +21,32 @@ function hoursText(hours: number): string {
 function Poster(): React.ReactElement {
   return (
     <div className="poster" aria-hidden="true">
-      <svg viewBox="0 0 800 520" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-        <rect width="800" height="520" fill="#f4ede2" />
+      <svg viewBox="0 0 800 485" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+        <rect width="800" height="485" fill="#f4ede2" />
 
-        {/* kiln: flat terracotta, a black doorway, a band of fire. No gradients:
-            flat shapes survive being shrunk to 300px. */}
-        <path d="M-20 520 L-20 132 Q150 88 372 120 L372 520 Z" fill="#b4552f" stroke="#221a14" strokeWidth="3" />
-        <path d="M-20 520 L-20 168 Q150 126 336 152 L336 520 Z" fill="#140b07" />
-        <path d="M-20 330 Q150 300 336 316 L336 520 L-20 520 Z" fill="#c2451c" />
-        <path d="M-20 362 Q150 338 336 350 L336 520 L-20 520 Z" fill="#ffb35e" />
-        <path d="M-20 394 Q150 372 336 382 L336 520 L-20 520 Z" fill="#fff3d6" />
-        <g fill="#8e3f22">
-          <rect x="-20" y="236" width="356" height="3" opacity="0.55" />
-          <rect x="-20" y="330" width="356" height="3" opacity="0.55" />
-        </g>
+        {/* the kiln wall, one arch, one piece in front of it */}
+        <rect x="-10" y="0" width="520" height="306" fill="#bda58b" />
+        <path d="M26 306 L26 176 Q188 96 424 156 L424 306 Z" fill="#9a5820" />
+        <path d="M42 306 L42 190 Q188 118 408 172 L408 306 Z" fill="#120a06" />
+        <path d="M42 262 Q188 240 408 266 L408 306 L42 306 Z" fill="#a8451c" />
+        <path d="M42 284 Q188 266 408 288 L408 306 L42 306 Z" fill="#e0662a" />
+        <path d="M42 296 Q188 284 408 298 L408 306 L42 306 Z" fill="#ffce94" />
 
-        {/* embers */}
-        <g fill="#c2451c">
-          <circle cx="250" cy="372" r="4" />
-          <circle cx="290" cy="300" r="3" opacity="0.8" />
-          <circle cx="206" cy="286" r="2.4" opacity="0.6" />
-          <circle cx="322" cy="412" r="3" opacity="0.7" />
-        </g>
+        {/* the yard floor, a single line across the card */}
+        <rect x="-10" y="306" width="820" height="2" fill="#8c7358" opacity="0.5" />
 
-        {/* one piece, flat cobalt with one hard highlight */}
-        <g transform="translate(520 350) scale(0.92)">
-          <ellipse cx="4" cy="6" rx="86" ry="14" fill="#8a6a48" opacity="0.22" />
+        {/* one piece, standing on that line, lit by the arch */}
+        <g transform="translate(596 306) scale(1.05)">
+          <ellipse cx="6" cy="2" rx="40" ry="7" fill="#5a3e2a" opacity="0.26" />
           <path
-            d="M-25 -118 C-29 -103 -65 -95 -61 -46 C-57 -8 -27 0 0 0 C27 0 57 -8 61 -46 C65 -95 29 -103 25 -118 Z"
+            d="M-12 -58 C-14 -50 -31 -46 -31 -22 C-31 -5 -15 0 0 0 C15 0 31 -5 31 -22 C31 -46 14 -50 12 -58 Z"
             fill="#2f5aa8"
             stroke="#221a14"
-            strokeWidth="3"
+            strokeWidth="2"
           />
-          <path d="M-52 -54 C-40 -66 -16 -72 2 -72" stroke="#ffffff" strokeOpacity="0.55" strokeWidth="7" fill="none" />
-          <ellipse cx="0" cy="-118" rx="25" ry="6" fill="#0b0603" />
-          <ellipse cx="0" cy="-118" rx="25" ry="6" fill="none" stroke="#221a14" strokeWidth="3" />
+          <path d="M-24 -34 C-16 -42 -4 -46 6 -46" stroke="#ffffff" strokeOpacity="0.5" strokeWidth="5" fill="none" />
+          <ellipse cx="0" cy="-58" rx="12" ry="3.6" fill="#0b0603" />
+          <ellipse cx="0" cy="-58" rx="12" ry="3.6" fill="none" stroke="#221a14" strokeWidth="2" />
         </g>
       </svg>
     </div>

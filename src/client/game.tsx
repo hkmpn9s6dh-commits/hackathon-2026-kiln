@@ -518,7 +518,7 @@ function App(): React.ReactElement {
         {phase === 'result' && result ? (
           <>
             <div className="result">
-              <div className="stamp">
+              <div className={`stamp grade-${result.grade}`}>
                 <span className="kicker">{result.already ? 'Already fired today' : 'Out of the kiln'}</span>
                 <span className="grade">{GRADE_LABEL[result.grade]}</span>
                 <span className="line">{GRADE_LINE[result.grade]}</span>
